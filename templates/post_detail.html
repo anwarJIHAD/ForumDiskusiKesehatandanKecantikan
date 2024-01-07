@@ -1,0 +1,256 @@
+{% extends 'base_after.html' %}
+{% block head %}
+    <title>Forum</title>
+{% endblock %}
+{% block title %}
+    <p class="has-text-weight-bold">Detail</p>
+{% endblock %}
+{% block body %}
+<section id="discussion">
+    <div class="card w-100 my-3" style="border-radius: 30px;">
+        <div class="card-body p-5">
+        <div class="d-flex flex-row mb-5">
+        <div class="col-11">
+          <a id="topics" class="btn btn-success p-1 m-0" href="/topic/{{ post.topic }}" style="font-size:10px; width: fit-content;">{{ post.topic }}</a>
+        </div>
+        <a class="bi bi-three-dots-vertical col-1 d-flex justify-content-end" onclick="$('#post_drop').toggleClass('is-active')" style="font-size: 18px; color: inherit;"></a>
+        <div class="dropdown is-right" id="post_drop">
+          <div class="dropdown-menu">
+            <div class="dropdown-content">
+              {% if post.username == user_info.username %}
+              <a class="dropdown-item" href="/edit_post/{{ post._id }}"><span>Edit Post</span></a>
+              <a class="dropdown-item" href="#" onclick="confirmDelete('{{ post._id }}')"><span>Delete Post</span></a>
+              {% elif user_info.username == 'admin' %}
+              <a class="dropdown-item" href="#" onclick="confirmDelete('{{ post._id }}')"><span>Delete Post</span></a>
+              {% endif %}  
+              <a class="dropdown-item" href="#" onclick="showReportModal('{{ post._id }}')"><span>Report</span></a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <p class="h4 has-text-weight-bold">{{ post.title }}</p>
+            <div class="d-flex flex-row mb-4">
+                <a class="image is-48x48" href="/user/{{ post.username }}">
+                    <img class="is-rounded" src="../static/{{ post.profile_pic_real }}"
+                        alt="Image">
+                </a>
+                <div class="d-flex flex-column mx-2">
+                    <p class="m-0 p-0">
+                        <strong>{{ post.profile_name }}</strong>
+                        {% if post.status == 'verified' %}
+                      
+                          <span class="button is-primary is-static text-white" style="font-size:12px; padding: 3px; border: 0px; height: 18px; background-color: #00d1b2; border-color: #00d1b2;">Expert</span>
+             
+                        {% endif %}                 
+                    </p>
+                    <p class="m-0 p-0">
+                    <small>@{{ post.username }}</small> <small id="time_before"></small>      
+                    </p>   
+                </div>
+            </div>
+            
+
+
+            <div class="mt-5">
+                <p>{{ post.question|safe }}</p>
+                       
+            </div>
+
+
+        </div>
+        <div class="d-flex justify-content-center" onclick="$('#img_post').toggleClass('w-100')" style="height: 300px;">
+            <img id="img_post" class="w-100" src="../static/{{ post.post_pic_real }}" alt="" style="object-fit: cover;">
+        </div>
+        
+
+        <hr class="separator m-0 my-3 mx-5 p-0 px-5">
+            <div class="d-flex justify-content-end px-5">
+              <a id="up_{{ post._id }}" onclick="toggle_up('{{ post._id }}', 'up')" class="bi bi-arrow-up has-text-weight-bold me-3" style="font-size:16px;">
+                <span class="up-num" style="font-size:16px;"></span>
+              </a>
+              <a id="answer_count_{{ post._id }}" class="bi bi-chat-left has-text-weight-bold text-body-tertiary me-3" style="font-size:16px;"></a>
+              <a id="shareButton{{ post._id }}" onclick="btn_share('{{ post._id }}')" class="bi bi-share has-text-weight-bold text-body-tertiary" data-toggle="modal" data-target="#shareModal" style="font-size:16px;">
+                Share
+              </a>
+  
+              <!-- Modal -->
+              <div class="modal" id="modal-share-{{ post._id }}">
+                  <div class="modal-background" onclick='$("#modal-share-{{ post._id }}").removeClass("is-active")'></div>
+                  <div class="modal-content">
+            
+                          <article class="media">
+                              <div class="media-content p-5">
+                                  <div class="field">
+                                  <input id="shareLink{{ post._id }}" class="form-control" type="text" readonly>
+                                  </div>
+                                  
+                                  <nav class="level is-mobile">
+                                      <div class="level-right">
+                                          <div class="level-item">
+                                              <a class="button is-primary" id="copyButton${post['_id']}" onclick="copy_button('{{ post._id }}')">Copy</a>
+                                          </div>
+                                          <div class="level-item">
+                                              <a class="button is-primary is-outlined"
+                                                onclick='$("#modal-share-{{ post._id }}").removeClass("is-active")'>Cancel</a>
+                                          </div>
+                                      </div>
+                                  </nav>
+                              </div>
+                          </article>
+                      
+                  </div>
+                  <button class="modal-close is-large" aria-label="close"
+                          onclick='$("#modal-share-{{ post._id }}").removeClass("is-active")'></button>
+              </div>
+            
+            </div>
+            
+ 
+        <hr class="separator m-0 my-3 mx-5 p-0 px-5">
+        <section id="answer" class="p-3">
+          <p class="h6 has-text-weight-bold px-lg-3">Answers</p>
+          <article class="media">
+              <div class="media-content my">
+                  <div class="field px-lg-3">
+                      <p class="control">
+                          <input 
+                          id="input-answer"
+                          class="input is-rounded"
+                          placeholder="Answer the question"
+                          onclick="$('#modal-answer').addClass('is-active')"
+                          />
+
+                          <div class="modal" id="modal-answer">
+                              <div class="modal-background" onclick='$("#modal-answer").removeClass("is-active")'></div>
+                              <div class="modal-content">
+                        
+                                      <article class="media">
+                                          <div class="media-content p-5">
+                                              <div class="field">
+                                                  <p class="control">
+                                                      <textarea id="textarea-answer-{{ post._id }}" class="textarea"
+                                                                placeholder="Answer the question"></textarea>
+                                                  </p>
+                                              </div>
+                                              
+                                              <nav class="level is-mobile">
+                                                  <div class="level-right">
+                                                      <div class="level-item">
+                                                          <a class="button is-primary" onclick="answer('{{ post._id }}')">Answer</a>
+                                                      </div>
+                                                      <div class="level-item">
+                                                          <a class="button is-primary is-outlined"
+                                                            onclick='$("#modal-answer").removeClass("is-active")'>Cancel</a>
+                                                      </div>
+                                                  </div>
+                                              </nav>
+                                          </div>
+                                      </article>
+                                  
+                              </div>
+                              <button class="modal-close is-large" aria-label="close"
+                                      onclick='$("#modal-answer").removeClass("is-active")'></button>
+                          </div>
+
+                      </p>
+                  </div>
+              </div>
+          </article>
+          <div id="answer2">
+             
+          </div>
+        </section>
+
+                     <!-- Modal Report -->
+                     <div id="reportModal" class="modal">
+                        <div class="modal-background"></div>
+                        <div class="modal-card">
+                          <header class="modal-card-head">
+                            <p class="modal-card-title">Report Post</p>
+                            <button class="delete" aria-label="close" onclick="closeModal()"></button>
+                          </header>
+                          <section class="modal-card-body">
+                            <div class="field">
+                              <label class="label" for="issueType">Type of Issue</label>
+                              <div class="control">
+                                <div class="select">
+                                  <select id="issueType">
+                                    <option value="Technical Error" selected>Technical Error</option>
+                                    <option value="Unclear Question">Unclear Question</option>
+                                    <option value="Rule Violation">Rule Violation</option>
+                                    <option value="Irrelevant Content">Irrelevant Content</option>
+                                    <option value="Discrimination or Harassment">Discrimination or Harassment</option>
+                                    <option value="Spam">Spam</option>
+                                    <option value="Inaccurate Information">Inaccurate Information</option>
+                                    <option value="Repeated Question">Repeated Question</option>
+                                    <option value="Inappropriateness">Inappropriateness</option>
+                                    <option value="Other">Other</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="field">
+                              <label class="label" for="issueDescription">Description</label>
+                              <div class="control">
+                                <textarea class="textarea" id="issueDescription"></textarea>
+                              </div>
+                            </div>
+                          </section>
+                          <footer class="modal-card-foot">
+                            <button class="button is-primary" onclick="submitReport('{{ post._id }}')">Submit</button>
+                            <button class="button" onclick="closeModal()">Cancel</button>
+                          </footer>
+                        </div>
+                      </div>
+    </div>
+</section>
+  
+{% endblock %}
+
+{% block script %}
+    <script src="../static/js/forum.js" data-username="{{ user_info.username }}"></script>
+    <script>
+        $(document).ready(function () {
+            time_before()
+            $("#popular-posts").empty()
+            $("#must-read").empty()
+            get_posts2()
+            getAnswer_detail('{{ post._id }}')
+            let class_up = '{{ post.up_by_me }}' ? "is-primary": "text-body-tertiary"
+            $(`#up_{{ post._id }}`).addClass(class_up)
+
+            let countUp = '{{ post.count_up }}';
+            let countStr = num2str(countUp);
+            $(".up-num").text(countStr);
+
+            let topicsElement = $("#topics");
+
+            // Mendapatkan teks awal dari elemen
+            let originalText = topicsElement.text();
+
+            // Mengganti tanda minus dengan spasi
+            let modifiedText = originalText.replace(/-/g, " ");
+
+            if (modifiedText.includes(" ")) {
+              modifiedText = modifiedText.replace(/\b\w/g, function(match) {
+                return match.toUpperCase();
+              });
+            } else {
+              modifiedText = modifiedText.charAt(0).toUpperCase() + modifiedText.slice(1);
+            }
+
+            // Mengatur teks yang telah dimodifikasi ke elemen
+            topicsElement.text(modifiedText);
+          
+        });
+
+        function time_before(){
+            let time = new Date('{{ post.date }}')
+            let time2 = time2str(time);
+            let temp_html = `${time2}`
+            $('#time_before').append(temp_html);
+        }
+        
+    </script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block head %}
+    <title>Register</title>
+{% endblock %}
+{% block body %}
+<div class="d-flex flex-row row">
+    <div class="col-lg-7 col-sm-9">
+        <img src="../static/page_images/register.jpg" alt="" style="object-fit: contain;">
+    </div>
+    
+
+    <div class="p-5 my-5 col-lg-5 col-sm-3">
+        <div class="d-flex flex-column justify-content-center pe-5 mb-3">
+        <p class="h1 has-text-weight-bold">Register</></p>
+        <p>Please fill out this form to complete the registration process.
+            This is a registration form that requires your information to be filled in.</p>
+        </div>
+        <div class="d-grid me-lg-5 pe-lg-5 me-sm-0 pe-sm-0" onclick="check_dup()">
+        <div class="mb-3">
+            <input type="text" class="form-control" id="input_user" placeholder="Username">
+            <p id="help_user" class="help">
+                For your username, please enter 5-15 English characters, numbers, or the following special characters (._-)
+              </p>
+        </div>
+        <div class="mb-3" >
+            <input type="email" class="form-control" id="input_email" placeholder="Email">
+        </div>
+        <div class="mb-3">
+        <input type="password" class="form-control" id="input_pass" placeholder="Password">
+        <p id="help_pass" class="help">
+            For your password, please enter 8-20 English characters, numbers, or the following special characters (!@#$%^&*)
+          </p>
+        </div>
+        <div class="mb-3">
+        <input type="password" class="form-control" id="input_pass2" placeholder="Confirm Password">
+        <p id="help_pass2" class="help">
+            Please enter in your password again
+        </p>
+        </div>
+        <div class="mb-3">
+            <select id="role_select" class="form-select">
+                <option selected value="" disabled>--Sign in as--</option>
+                <option value="normal">Normal</option>
+                <option value="expert">Expert</option>
+            </select>        
+        <p id="help_role" class="help">
+            Select your role
+        </p>
+        </div>
+        <button class="button is-primary" onclick="sign_up()">Register</button>
+        </div>
+          
+        
+    </div>
+
+</div>
+   
+{% endblock %}
+
+{% block script %}
+    <script src="../static/js/register.js"></script>
+{% endblock %}

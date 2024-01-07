@@ -1,0 +1,44 @@
+{% extends 'base_after.html' %}
+{% block head %}
+    <title>Report Datas</title>
+{% endblock %}
+{% block title %}
+<p class="has-text-weight-bold">Report Datas</p>
+    
+{% endblock %}
+{% block body %}
+<table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+    <thead class="thead">
+      <tr>
+        <th scope="col">No.</th>
+        <th scope="col">Post ID</th>
+        <th scope="col">Reported by</th>
+        <th scope="col">Type of Issue</th>
+        <th scope="col">Description</th>
+        <th scope="col">Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in reportDatas %}
+      <tr>
+        <th scope="row">{{ loop.index }}</th>
+        <td>{{ report.id_post }}</td>
+        <td>{{ report.username }}</td>
+        <td>{{ report.issue_type }}</td>
+        <td>{{ report.description }}</td>
+        <td><a class="button is-info" href="{{ report.link }}">Post Link</a></td>
+      </tr>
+      {% endfor %} 
+    </tbody>
+  </table>
+
+{% endblock %}
+{% block script %}
+    <script>
+        $(document).ready(function () {
+            $(".sidebar2").addClass('is-hidden')
+            $('.content').addClass('me-0')
+        });
+
+    </script>
+{% endblock %}
